@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {Repository, UpdateResult} from 'typeorm';
 import { User } from './users.entity';
 import {CreateUserDto} from "./dto/create-user.dto";
+import {UpdateUserDto} from "./dto/update-user.dto";
+//import {validate} from "class-validator";
 
 @Injectable()
 export class UsersService {
@@ -13,15 +15,33 @@ export class UsersService {
 
     create(createUserDto: CreateUserDto): Promise<User> {
         const user = new User();
-        user.firstName = createUserDto.firstName;
-        user.lastName = createUserDto.lastName;
+        user.name = createUserDto.name;
+        user.email = createUserDto.email;
+        user.password = createUserDto.password;
+
+        // не до конца разобрался с местной валидацией
+        // const errors = validate(user);
+        // if (!errors) {
+        //     throw new Error(`Validation failed!`);
+        // } else {
+        // }
 
         return this.usersRepository.save(user);
+    }
 
-        // const user = this.usersRepository.create(createUserDto);
-        // return user;
-//        return dto;
+    update(updateUserDto: UpdateUserDto): Promise<UpdateResult> {
+        const updateResult = this.usersRepository
+            .createQueryBuilder()
+            .update(User)
+            .set({
+                name: updateUserDto.name,
+                email: updateUserDto.email,
+                password: updateUserDto.password
+            })
+            .where("id = :id", { id: updateUserDto.id })
+            .execute();
 
+        return updateResult;
     }
 
     findAll(): Promise<User[]> {
@@ -32,8 +52,17 @@ export class UsersService {
         return this.usersRepository.findOne(id);
     }
 
-    async remove(id: string): Promise<void> {
-        await this.usersRepository.delete(id);
+
+    findOneName(name: string): Promise<User[]> {
+        const user = this.usersRepository
+            .createQueryBuilder("user")
+            .where("user.name = :name", { name: name })
+            .getMany();
+
+        return user;
     }
 
+    async remove(id: string): Promise<void> {
+        await this.usersRepository.softDelete(id);
+    }
 }

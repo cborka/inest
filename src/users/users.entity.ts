@@ -1,16 +1,33 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn} from 'typeorm';
+import {IsEmail} from "class-validator";
 
 @Entity({name: 'users'})
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    firstName: string;
+    @Column("varchar", { length: 80 })
+    name: string;
 
     @Column()
-    lastName: string;
+    @IsEmail()
+    email: string;
+
+    @Column()
+    password: string;
+
+    @CreateDateColumn ()
+    createdAt: string;
+
+    @DeleteDateColumn ()
+    deletedAt: string;
 
     @Column({ default: true })
-    isActive: boolean;
+    isDeleted: boolean;
 }
+
+/*
+● id и name;
+● email и password;
+● createdAt и deletedAt.
+ */
