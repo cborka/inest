@@ -1,0 +1,8 @@
+.border {
+    border: 1px solid lightgray ;
+    border-collapse: collapse;
+}
+
+.bold {
+    font-weight: bold;
+}

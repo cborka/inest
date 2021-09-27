@@ -8,6 +8,8 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <link rel="stylesheet" href="/css/style.css" />
     <!--<script src="/js/lib.js"></script>-->
 
@@ -15,15 +17,19 @@
     <body>
 
     <h1> Клиент </h1>
-    <form name="useradd" action="/users" method="POST">
+    <form id="user_form" name="user_form" action="/users" method="POST">
         <table class="form">
             <tr>
+                <td><label>Id</label></td>
+                <td><input id="id" type="text" name="id" readonly value="0"></td>
+            </tr>
+            <tr>
                 <td><label>Имя</label></td>
-                <td><input id="name" type="text" name="name" placeholder="Name" value="John" ></td>
+                <td><input id="name" type="text" name="name" placeholder="Name" value=""></td>
             </tr>
             <tr>
                 <td><label>Почта</label></td>
-                <td><input id="email" type="email" name="email" placeholder="email" value="john@mymail.com" ></td>
+                <td><input id="email" type="email" name="email" placeholder="email" value=""></td>
             </tr>
             <tr>
                 <td><label>Пароль</label></td>
@@ -32,15 +38,172 @@
             <tr>
                 <td></td>
                 <td>
-                    <button type="submit">Добавить нового пользователя</button>
+                    <button type="submit">Применить</button>
                 </td>
             </tr>
         </table>
     </form>
-
-    <a href="/users/all" target="_blank">Список пользователей</a>
     <br>
-    <a href="/user_edit.html">Изменить данные о пользователе</a>
+    <button onclick="add_record()">Добавить запись</button>
+    <br>
+    <br>
+
+    <input id="search_id" type="text" name="search_id" value=""></td>
+    <input id="search_name" type="text" name="search_name" value=""></td>
+    <button id="btn1" onclick="get_query1()">Обновить данные | Фильтр по <b>id</b> и <b>name</b></button>
+    <button id="btn2" onclick="get_deleted()">Показать мягко удалённые</button> <br>
+
+    <div id="users"></div>
+
+
+
+
+    <script>
+
+        // Мягко удалить запись
+        function undelete_record(id) {
+
+            $.get("/users/undelete/"+id, function (data, status) {
+                if (status === 'success') {
+                    get_deleted();
+                } else {
+                    alert("Status: " + status);
+                }
+            });
+        }
+
+        // Мягко удалить запись
+        function delete_record(id) {
+
+            $.get("/users/delete/"+id, function (data, status) {
+                if (status === 'success') {
+                    get_query1();
+                } else {
+                    alert("Status: " + status);
+                }
+            });
+        }
+
+        // Получить удаленные записи
+        function get_deleted() {
+
+            $.get("/users/deleted", function (data, status) {
+                if (status === 'success') {
+                    render(data);
+                } else {
+                    alert("Status: " + status);
+                }
+            });
+        }
+
+        // Получить данные
+        function get_query1() {
+
+            let id = document.getElementById('search_id').value;
+            let name = document.getElementById('search_name').value;
+
+            let params = '';
+
+            if (id.trim() !== '') {
+                params = '/id/'+id;
+            }
+            else if (name.trim() !== '') {
+                params = '/name/'+name;
+            } else {
+                params = '/all';
+            }
+
+            $.get("/users"+params, function (data, status) {
+                if (status === 'success') {
+                    render(data);
+                } else {
+                    alert("Status: " + status);
+                }
+            });
+        }
+
+        // Вывести данные в таблицу
+        function render(data) {
+//            alert("Data: " + JSON.stringify(data[0].name));
+
+            let content = ' \
+            <table class="border"> \
+            <head> \
+                <td class="border bold">id</td> \
+                <td class="border bold">name</td>\
+                <td class="border bold">email</td>\
+                <td class="border bold">password</td>\
+                <td class="border bold">createdAt</td>\
+                <td class="border bold">deletedAt</td>\
+                <td class="border bold">isDeleted</td>\
+            </head>';
+
+                content += ` \
+            <tr>\
+            <td class="border"><input id="search_xid" type="number" name="search_xid" value=""></td>\
+            <td class="border"><input id="search_xname" type="text" name="search_xname"  value=""></td>\
+            <td class="border"></td>\
+            <td class="border"></td>\
+            <td class="border"></td>\
+            <td class="border"></td>\
+            <td class="border"></td>\
+            <!--<td class="border"><button onclick="find_record()">Filter</button></td>\-->
+            </tr> \
+            `;
+
+            data.forEach(function(item, index, array) {
+
+                content += ` \
+            <tr>\
+            <td class="border">${item.id}</td>\
+            <td class="border">${item.name}</td>\
+            <td class="border">${item.email}</td>\
+            <td class="border">${item.password}</td>\
+            <td class="border">${item.createdAt}</td>\
+            <td class="border">${item.deletedAt}</td>\
+            <td class="border">${item.isDeleted}</td>\
+            <td class="border"><button onclick="edit_record(${item.id},'${item.name}','${item.email}','${item.password}')">Edit</button></td>\
+            <td class="border"><button onclick="delete_record(${item.id})">Delete</button></td>\
+            <td class="border"><button onclick="undelete_record(${item.id})">UnDelete</button></td>\
+            </tr> \
+            `;
+            });
+
+            content += ' \
+            </table> \
+            ';
+            document.getElementById('users').innerHTML = content;
+        }
+
+        // Редактировать запись
+        function edit_record(id, name, email, password) {
+            let form = document.forms['user_form'];
+
+            form.elements['id'].value = id;
+            form.elements['name'].value = name;
+            form.elements['email'].value = email;
+            form.elements['password'].value = password;
+
+            document.getElementById('name').focus();
+        }
+
+        // Добавить запись
+        function add_record() {
+            let form = document.forms['user_form'];
+
+            form.elements['id'].value = 0;
+            form.elements['name'].value = '';
+            form.elements['email'].value = '';
+            form.elements['password'].value = '';
+
+            document.getElementById('name').focus();
+        }
+
+        get_query1();
+
+    </script>
+
+
 
     </body>
     </html>

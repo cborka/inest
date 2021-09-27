@@ -2,7 +2,6 @@ import {Injectable} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Repository, UpdateResult} from 'typeorm';
 import { User } from './users.entity';
-import {CreateUserDto} from "./dto/create-user.dto";
 import {UpdateUserDto} from "./dto/update-user.dto";
 //import {validate} from "class-validator";
 
@@ -13,7 +12,8 @@ export class UsersService {
         private readonly usersRepository: Repository<User>,
     ) {}
 
-    create(createUserDto: CreateUserDto): Promise<User> {
+    // Создание новой записи
+    create(createUserDto: UpdateUserDto): Promise<User> {
         const user = new User();
         user.name = createUserDto.name;
         user.email = createUserDto.email;
@@ -29,8 +29,9 @@ export class UsersService {
         return this.usersRepository.save(user);
     }
 
+    // Обновление записи
     update(updateUserDto: UpdateUserDto): Promise<UpdateResult> {
-        const updateResult = this.usersRepository
+        return this.usersRepository
             .createQueryBuilder()
             .update(User)
             .set({
@@ -40,29 +41,60 @@ export class UsersService {
             })
             .where("id = :id", { id: updateUserDto.id })
             .execute();
-
-        return updateResult;
     }
 
+    // Обновить или создать запись
+    create_update(updateUserDto: UpdateUserDto): Promise<UpdateResult> | Promise<User> {
+        if (updateUserDto.id == 0) {
+            return this.create(updateUserDto);
+        } else {
+            return this.update(updateUserDto);
+        }
+    }
+
+    // Получить все записи
     findAll(): Promise<User[]> {
         return this.usersRepository.find();
     }
 
+    // Получить одну запись по id
     findOne(id: string): Promise<User> {
         return this.usersRepository.findOne(id);
     }
 
-
-    findOneName(name: string): Promise<User[]> {
-        const user = this.usersRepository
+    // Получить зипись по имени
+    findByName(name: string): Promise<User[]> {
+        return this.usersRepository
             .createQueryBuilder("user")
             .where("user.name = :name", { name: name })
             .getMany();
-
-        return user;
     }
 
+    // Получить зипись по id
+    findById(id: string): Promise<User[]> {
+        return this.usersRepository
+            .createQueryBuilder("user")
+            .where("user.id = :id", { id: id })
+            .withDeleted()
+            .getMany();
+    }
+
+    // Получить мягко удаленные зиписи
+    findSoftDeleted(): Promise<User[]> {
+        return this.usersRepository
+            .createQueryBuilder("user")
+            .where("user.deletedAt IS NOT NULL")
+            .withDeleted()
+            .getMany();
+    }
+
+    // Пометить запись на удаление
     async remove(id: string): Promise<void> {
         await this.usersRepository.softDelete(id);
+    }
+
+    // Пометить запись на удаление
+    async undelete(id: string): Promise<void> {
+        await this.usersRepository.restore(id);
     }
 }
