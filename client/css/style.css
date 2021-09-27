@@ -1,8 +1,17 @@
 .border {
     border: 1px solid lightgray ;
     border-collapse: collapse;
+    padding: 1px 5px;
 }
 
 .bold {
     font-weight: bold;
+}
+
+.col1 {
+    width: 50px;
+}
+
+.col2 {
+    width: 150px;
 }

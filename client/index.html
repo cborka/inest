@@ -47,11 +47,11 @@
     <button onclick="add_record()">Добавить запись</button>
     <br>
     <br>
-
-    <input id="search_id" type="text" name="search_id" value=""></td>
-    <input id="search_name" type="text" name="search_name" value=""></td>
-    <button id="btn1" onclick="get_query1()">Обновить данные | Фильтр по <b>id</b> и <b>name</b></button>
+    <input id="search_id" class="col1" type="text" name="search_id" value="" title="Введите искомое id" placeholder="id" ></td>
+    <input id="search_name" class="" type="text" name="search_name" value="" title="Введите искомое name" placeholder="name"></td>
+    <button id="btn1" onclick="get_query1()">Обновить данные | Найти <b>id</b> или <b>name</b></button>
     <button id="btn2" onclick="get_deleted()">Показать мягко удалённые</button> <br>
+    <br>
 
     <div id="users"></div>
 
@@ -127,10 +127,10 @@
 //            alert("Data: " + JSON.stringify(data[0].name));
 
             let content = ' \
-            <table class="border"> \
+            <table id="table1" class="border"> \
             <head> \
-                <td class="border bold">id</td> \
-                <td class="border bold">name</td>\
+                <td class="border bold col1">id</td> \
+                <td class="border bold ">name</td>\
                 <td class="border bold">email</td>\
                 <td class="border bold">password</td>\
                 <td class="border bold">createdAt</td>\
@@ -138,35 +138,22 @@
                 <td class="border bold">isDeleted</td>\
             </head>';
 
-                content += ` \
-            <tr>\
-            <td class="border"><input id="search_xid" type="number" name="search_xid" value=""></td>\
-            <td class="border"><input id="search_xname" type="text" name="search_xname"  value=""></td>\
-            <td class="border"></td>\
-            <td class="border"></td>\
-            <td class="border"></td>\
-            <td class="border"></td>\
-            <td class="border"></td>\
-            <!--<td class="border"><button onclick="find_record()">Filter</button></td>\-->
-            </tr> \
-            `;
-
             data.forEach(function(item, index, array) {
 
                 content += ` \
-            <tr>\
-            <td class="border">${item.id}</td>\
-            <td class="border">${item.name}</td>\
-            <td class="border">${item.email}</td>\
-            <td class="border">${item.password}</td>\
-            <td class="border">${item.createdAt}</td>\
-            <td class="border">${item.deletedAt}</td>\
-            <td class="border">${item.isDeleted}</td>\
-            <td class="border"><button onclick="edit_record(${item.id},'${item.name}','${item.email}','${item.password}')">Edit</button></td>\
-            <td class="border"><button onclick="delete_record(${item.id})">Delete</button></td>\
-            <td class="border"><button onclick="undelete_record(${item.id})">UnDelete</button></td>\
-            </tr> \
-            `;
+                <tr>\
+                <td class="border">${item.id}</td>\
+                <td class="border">${item.name}</td>\
+                <td class="border">${item.email}</td>\
+                <td class="border">${item.password}</td>\
+                <td class="border">${item.createdAt}</td>\
+                <td class="border">${item.deletedAt}</td>\
+                <td class="border">${item.isDeleted}</td>\
+                <td class="border"><button onclick="edit_record(${item.id},'${item.name}','${item.email}','${item.password}')">Edit</button></td>\
+                <td class="border"><button onclick="delete_record(${item.id})">Delete</button></td>\
+                <td class="border"><button onclick="undelete_record(${item.id})">UnDelete</button></td>\
+                </tr> \
+                `;
             });
 
             content += ' \
