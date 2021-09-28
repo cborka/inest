@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Param, Post, Put, Query, Redirect} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, Redirect} from '@nestjs/common';
 import { UsersService } from './users.service';
 import {User} from "./users.entity";
 import {UpdateUserDto} from "./dto/update-user.dto";
@@ -15,7 +15,7 @@ export class UsersController {
         return this.usersService.create_update(updateUserDto);
     }
 
-    // Запрос на пометку записи на удаление
+    // Запрос на мягкое удаление записи
 //    @Delete('/delete/:id')
     @Get('/delete/:id')
     @Redirect('/')
@@ -23,7 +23,7 @@ export class UsersController {
         return this.usersService.remove(id);
     }
 
-    // Восстановить мягко удаленную запись
+    // Запрос на восстановление мягко удаленной записи
     @Get('/undelete/:id')
     @Redirect('/')
     undelete(@Param('id') id: string): Promise<void> {
@@ -36,12 +36,11 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
-    // Запрос на получение записи по имени
+    // Запрос на получение мягко удалённых записей
     @Get('/deleted')
     findSoftDeleted(): Promise<User[]> {
         return this.usersService.findSoftDeleted();
     }
-
 
     // Запрос на получение записи по имени
     @Get('/name/:name')
@@ -49,8 +48,8 @@ export class UsersController {
         return this.usersService.findByName(name);
     }
 
-
     // Запрос на получение записи по id
+    // Получаю по одной записи именно в массиве чтобы упросить фронтенд
     @Get('/id/:id')
     findById(@Param('id') id: string): Promise<User[]> {
         return this.usersService.findById(id);

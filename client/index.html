@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head title="Начало">
-    <meta charset="utf-8" />
+    <head title="Начало">
+        <meta charset="utf-8" />
 
-    <meta name="description" content="Начало...">
-    <meta name="author" content="cborka">
+        <meta name="description" content="Начало...">
+        <meta name="author" content="cborka">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <link rel="stylesheet" href="/css/style.css" />
-    <!--<script src="/js/lib.js"></script>-->
+        <link rel="stylesheet" href="/css/style.css" />
+        <!--<script src="/js/lib.js"></script>-->
 
     </head>
     <body>
@@ -56,11 +56,9 @@
     <div id="users"></div>
 
 
-
-
     <script>
 
-        // Мягко удалить запись
+        // Восстановить мягко удаленную запись
         function undelete_record(id) {
 
             $.get("/users/undelete/"+id, function (data, status) {
@@ -124,7 +122,6 @@
 
         // Вывести данные в таблицу
         function render(data) {
-//            alert("Data: " + JSON.stringify(data[0].name));
 
             let content = ' \
             <table id="table1" class="border"> \
@@ -190,9 +187,7 @@
 
     </script>
 
-
-
     </body>
-    </html>
+</html>
 
 

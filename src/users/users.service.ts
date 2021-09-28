@@ -52,7 +52,7 @@ export class UsersService {
         }
     }
 
-    // Получить все записи
+    // Получить все записи (кроме удалённых однако)
     findAll(): Promise<User[]> {
         return this.usersRepository.find();
     }
@@ -62,7 +62,7 @@ export class UsersService {
         return this.usersRepository.findOne(id);
     }
 
-    // Получить зипись по имени
+    // Получить записи по имени
     findByName(name: string): Promise<User[]> {
         return this.usersRepository
             .createQueryBuilder("user")
@@ -70,7 +70,7 @@ export class UsersService {
             .getMany();
     }
 
-    // Получить зипись по id
+    // Получить записи по id
     findById(id: string): Promise<User[]> {
         return this.usersRepository
             .createQueryBuilder("user")
@@ -88,12 +88,12 @@ export class UsersService {
             .getMany();
     }
 
-    // Пометить запись на удаление
+    // Мягко удалить запись
     async remove(id: string): Promise<void> {
         await this.usersRepository.softDelete(id);
     }
 
-    // Пометить запись на удаление
+    // Восстановить мягко удалённую запись
     async undelete(id: string): Promise<void> {
         await this.usersRepository.restore(id);
     }
