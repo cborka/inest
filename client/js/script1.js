@@ -8,22 +8,41 @@ function promise_test() {
     //let resolve = msg => alert(msg)
     //resolve('hi')
 
-    let promise = new Promise(function(resolve, reject) {
-        // эта функция выполнится автоматически, при вызове new Promise
+    // Промис имеет аргументом функцию с двумя аргументами-функциями
+    //
+    let promise = new Promise(
+        function(resolve, reject) {
 
-        //alert('in promise');
+            // Выполняется либо resolve() тогда аргумент передаётся в функцию,
+            // которая будет первым аргументом метода промиса .then
+            resolve("done!!!");
 
-        // через 1 секунду сигнализировать, что задача выполнена с результатом "done"
-        //setTimeout(() => resolve("done"), 1000);
-        setTimeout(() => resolve("done!!!"), 1000);
-        //setTimeout(() => reject(new Error("Whoops!")), 1000);
-
-    });
+            // либо reject() тогда аргумент передаётся в функцию,
+            // которая будет
+            //  аргументом метода промиса .catch,
+            //  либо вторым аргументом метода промиса .then
+            reject("Whoops!");
+        }
+    );
 
     promise.then(
-        result => alert(result), // выведет "done!" через одну секунду
-        error => alert(error) // не будет запущена
+        result => alert(result),    // выведет "done!"
+        error => alert(error)       // в данном примере не будет запущена,
+                                              // но если бы выполнилась reject("Whoops!")
+                                              // то вывела бы "Whoops!"
     );
+
+    promise.catch(
+        error => alert(error)       // не будет запущена
+                                              // но если бы выполнилась reject("Whoops!")
+                                              // то вывела бы "Whoops!"
+    );
+
+    promise.finally(                          // выполняется всегда при завершении
+        () => alert("Промис завершён")        // аргумент - функция без аргументов
+    );
+
+
 
 
 }
