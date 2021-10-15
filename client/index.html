@@ -10,6 +10,7 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+
         <link rel="stylesheet" href="/css/style.css" />
         <!--<script src="/js/lib.js"></script>-->
 
@@ -64,59 +65,28 @@
     <br>
     <div id="log"></div>
 
+    <script src="./js/script1.js" ></script>
 
     <script>
 
-
+//        printNumbers(3, 7);
 
         let promise = new Promise(function(resolve, reject) {
-            // эта функция выполнится автоматически, при вызове new Promise
-
-            //alert('in promise');
-
             resolve("done");
             //reject(new Error("Whoops!"));
-
 
             // через 1 секунду сигнализировать, что задача выполнена с результатом "done"
             // setTimeout(() => resolve("done"), 2000);
             // setTimeout(() => reject(new Error("Whoops!")), 1000);
         });
-
 //        .then(result => показать результат, err => показать ошибку)
-
-        // выполнится, когда промис завершится, независимо от того, успешно или нет
         promise.finally(() => log('остановить индикатор загрузки'))
-        .then( (result) => {setTimeout(log(result), 1000); return(result+"y")})
-        .then( (result) => {setTimeout(log(result), 1000); return(result+"y")})
-        .then( (result) => {setTimeout(log(result), 1000); return(result+"y")})
-        .then( (result) => {setTimeout(log(result), 1000); return(result+"y")})
-        .then( (result) => {setTimeout(log(result), 1000); return(result+"y")})
-        .then( (result) => {setTimeout(log(result), 1000); return(result+"y")})
-        .then( (result) => {log(result); return(result+"x")})
-        .then( (result) => {log(result); return(result+"x")})
-        .then( (result) => {log(result); return(result+"x")})
-        .then( (result) => {log(result); return(result+"x")})
-        .then( (result) => {log(result); return(result+"x")})
-        .then( (result) => {log(result); return(result+"x")})
-        .then(log);
-        promise.then(log);
-        promise.then( (result) => {setTimeout(log('zzzz'+result), 5000);});
-        //     result => log(result), // выведет "done!" через одну секунду
-        //     error => log(error) // не будет запущена
-        // );
-
-        // .catch(f) это тоже самое, что promise.then(null, f)
-        promise.catch(log); // выведет "Error: Ошибка!" спустя одну секунду
         promise.catch(log); // выведет "Error: Ошибка!" спустя одну секунду
 
 
-        // Лог
-        function log(msg) {
-            document.getElementById('log').innerHTML += msg + '<br>';
-        }
+        setTimeout(log, 3000, 'zxcv');
 
-
+//        printNumbers(121, 127);
 //------------------------------------------------------------------------------------------------
 
         // Восстановить мягко удаленную запись
@@ -244,11 +214,11 @@
             document.getElementById('name').focus();
         }
 
-        get_query1();
+        //get_query1();
 
     </script>
 
-    <script src="./js/script1.js"></script>
+    <!--<script src="./js/script1.js"></script>-->
 
     </body>
 </html>
